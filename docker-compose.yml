@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  medslm-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medslm-app
+    ports:
+      - "8501:8501"
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    command: streamlit run medslm_pipeline.py
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:13
+    container_name: medslm-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: medslm_user
+      POSTGRES_PASSWORD: medslm_pass
+      POSTGRES_DB: medslm_db
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
